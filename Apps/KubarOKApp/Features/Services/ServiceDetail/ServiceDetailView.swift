@@ -70,8 +70,9 @@ struct ServiceDetailView: View {
                     }
 
                     Section {
-                        Button("Ajukan Layanan") {}
-                            .disabled(true)
+                        NavigationLink("Ajukan Layanan") {
+                            SubmissionFlowView(sessionController: viewModel.sessionController, serviceID: service.id)
+                        }
                     }
                 }
             } else {
@@ -99,7 +100,7 @@ final class ServiceDetailViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
 
-    private let sessionController: AppSessionController
+    let sessionController: AppSessionController
     private let catalogAPI: any ServiceCatalogAPI
     private let serviceID: Int
 

@@ -13,7 +13,19 @@ public enum UserFacingErrorMapper {
             return "Profil belum dapat dihubungkan. Silakan coba lagi."
         case SessionError.remoteLogoutFailed:
             return "Anda telah keluar dari perangkat ini, tetapi server belum dapat dihubungi."
-        case APIError.httpError(let statusCode, _):
+        case APIError.httpError(let statusCode, let body):
+            if body?.contains("Profile data must be completed") == true {
+                return "Profil warga harus dilengkapi sebelum membuat pengajuan."
+            }
+            if body?.contains("Please validate your phone number") == true {
+                return "Nomor HP harus diverifikasi sebelum membuat pengajuan."
+            }
+            if statusCode == 404 {
+                return "Data pengajuan tidak ditemukan atau tidak dapat diakses."
+            }
+            if statusCode == 405 {
+                return "Data pengajuan atau berkas tidak memenuhi validasi server."
+            }
             return statusCode == 401 || statusCode == 403
                 ? "Sesi Anda tidak valid. Silakan masuk kembali."
                 : "Server tidak dapat memproses permintaan saat ini."

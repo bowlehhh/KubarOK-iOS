@@ -25,7 +25,8 @@ public final class APIClient: Sendable {
         method: String,
         body: Data? = nil,
         headers: [String: String] = [:],
-        queryItems: [URLQueryItem] = []
+        queryItems: [URLQueryItem] = [],
+        contentType: String? = nil
     ) async throws -> Data {
         let url = url(for: path, queryItems: queryItems)
         var request = URLRequest(url: url)
@@ -33,7 +34,10 @@ public final class APIClient: Sendable {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
         if body != nil {
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue(
+                contentType ?? "application/json",
+                forHTTPHeaderField: "Content-Type"
+            )
         }
 
         for (field, value) in headers {

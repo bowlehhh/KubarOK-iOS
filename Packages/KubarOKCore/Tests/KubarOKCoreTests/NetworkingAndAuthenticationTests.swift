@@ -48,6 +48,12 @@ import Testing
     #expect(loginURL.absoluteString == "https://kubarok.kutaibaratkab.go.id/v1/auth/login")
 }
 
+@Test func logoutUsesTheVerifiedBackendPath() {
+    let logoutURL = APIClient.shared.url(for: "auth/logout")
+
+    #expect(logoutURL.absoluteString == "https://kubarok.kutaibaratkab.go.id/v1/auth/logout")
+}
+
 @Test func httpErrorPreservesStatusAndResponseBody() {
     let error = APIError.httpError(
         statusCode: 401,

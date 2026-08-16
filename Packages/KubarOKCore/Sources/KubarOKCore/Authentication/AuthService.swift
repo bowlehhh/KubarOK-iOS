@@ -42,4 +42,12 @@ public final class AuthService: Sendable {
             throw APIError.decoding(error)
         }
     }
+
+    public func logout(apiToken: String) async throws {
+        _ = try await APIClient.shared.request(
+            path: "auth/logout",
+            method: "POST",
+            headers: ["api-token": apiToken]
+        )
+    }
 }

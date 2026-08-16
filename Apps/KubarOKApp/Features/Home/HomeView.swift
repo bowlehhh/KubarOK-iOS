@@ -21,6 +21,12 @@ struct HomeView: View {
                 LabeledContent("Citizen", value: sessionController.user?.citizen?.fullName ?? "-")
             }
 
+            Section("Layanan") {
+                NavigationLink("Layanan Publik") {
+                    BureauListView(sessionController: sessionController)
+                }
+            }
+
             Section {
                 Button("Keluar", role: .destructive) {
                     Task { await sessionController.logout() }

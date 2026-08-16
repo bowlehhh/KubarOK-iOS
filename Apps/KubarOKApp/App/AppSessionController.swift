@@ -71,6 +71,10 @@ final class AppSessionController: ObservableObject {
         await synchronize()
     }
 
+    func activeAPIToken() async throws -> String {
+        try await sessionManager.activeAPIToken()
+    }
+
     private func synchronize() async {
         let snapshot = await sessionManager.snapshot()
         state = snapshot.state

@@ -23,6 +23,11 @@
 		A1000000000000000000000E /* ProfileOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000E /* ProfileOnboardingView.swift */; };
 		A1000000000000000000000F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000F /* Assets.xcassets */; };
 		A10000000000000000000010 /* KubarOKCore in Frameworks */ = {isa = PBXBuildFile; productRef = C10000000000000000000001 /* KubarOKCore */; };
+		A10000000000000000000011 /* ServiceCatalogAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000012 /* ServiceCatalogAPI.swift */; };
+		A10000000000000000000012 /* BureauListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000013 /* BureauListView.swift */; };
+		A10000000000000000000013 /* ServiceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000014 /* ServiceListView.swift */; };
+		A10000000000000000000014 /* ServiceDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000015 /* ServiceDetailView.swift */; };
+		A10000000000000000000015 /* CatalogStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000016 /* CatalogStateView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +48,11 @@
 		B1000000000000000000000F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B10000000000000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10000000000000000000011 /* KubarOK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KubarOK.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10000000000000000000012 /* ServiceCatalogAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCatalogAPI.swift; sourceTree = "<group>"; };
+		B10000000000000000000013 /* BureauListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BureauListView.swift; sourceTree = "<group>"; };
+		B10000000000000000000014 /* ServiceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceListView.swift; sourceTree = "<group>"; };
+		B10000000000000000000015 /* ServiceDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceDetailView.swift; sourceTree = "<group>"; };
+		B10000000000000000000016 /* CatalogStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogStateView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +93,7 @@
 			isa = PBXGroup;
 			children = (
 				E10000000000000000000008 /* DesignSystem */,
+				E10000000000000000000010 /* Catalog */,
 				E10000000000000000000009 /* Security */,
 				E1000000000000000000000A /* Session */,
 			);
@@ -95,6 +106,7 @@
 				E1000000000000000000000B /* Authentication */,
 				E1000000000000000000000C /* Home */,
 				E1000000000000000000000D /* Onboarding */,
+				E10000000000000000000011 /* Services */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -192,6 +204,49 @@
 			path = Registration;
 			sourceTree = "<group>";
 		};
+		E10000000000000000000010 /* Catalog */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000012 /* ServiceCatalogAPI.swift */,
+			);
+			path = Catalog;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000011 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000016 /* CatalogStateView.swift */,
+				E10000000000000000000012 /* BureauList */,
+				E10000000000000000000013 /* ServiceList */,
+				E10000000000000000000014 /* ServiceDetail */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000012 /* BureauList */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000013 /* BureauListView.swift */,
+			);
+			path = BureauList;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000013 /* ServiceList */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000014 /* ServiceListView.swift */,
+			);
+			path = ServiceList;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000014 /* ServiceDetail */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000015 /* ServiceDetailView.swift */,
+			);
+			path = ServiceDetail;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -280,6 +335,11 @@
 				A1000000000000000000000C /* RegistrationView.swift in Sources */,
 				A1000000000000000000000D /* HomeView.swift in Sources */,
 				A1000000000000000000000E /* ProfileOnboardingView.swift in Sources */,
+				A10000000000000000000011 /* ServiceCatalogAPI.swift in Sources */,
+				A10000000000000000000012 /* BureauListView.swift in Sources */,
+				A10000000000000000000013 /* ServiceListView.swift in Sources */,
+				A10000000000000000000014 /* ServiceDetailView.swift in Sources */,
+				A10000000000000000000015 /* CatalogStateView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

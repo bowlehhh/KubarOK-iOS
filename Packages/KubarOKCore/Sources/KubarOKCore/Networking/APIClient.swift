@@ -24,9 +24,10 @@ public final class APIClient: Sendable {
         path: String,
         method: String,
         body: Data? = nil,
-        headers: [String: String] = [:]
+        headers: [String: String] = [:],
+        queryItems: [URLQueryItem] = []
     ) async throws -> Data {
-        let url = url(for: path)
+        let url = url(for: path, queryItems: queryItems)
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -64,10 +65,21 @@ public final class APIClient: Sendable {
     }
 
     func url(for path: String) -> URL {
+        url(for: path, queryItems: [])
+    }
+
+    func url(for path: String, queryItems: [URLQueryItem]) -> URL {
         guard !path.isEmpty else {
             return APIConfig.baseURL
         }
 
-        return APIConfig.baseURL.appendingPathComponent(path)
+        let pathURL = APIConfig.baseURL.appendingPathComponent(path)
+        guard !queryItems.isEmpty else {
+            return pathURL
+        }
+
+        var components = URLComponents(url: pathURL, resolvingAgainstBaseURL: false)
+        components?.queryItems = queryItems
+        return components?.url ?? pathURL
     }
 }

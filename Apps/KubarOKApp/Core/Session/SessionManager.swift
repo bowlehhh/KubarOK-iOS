@@ -44,6 +44,14 @@ public actor SessionManager {
         AppSessionSnapshot(state: state, user: user)
     }
 
+    public func activeAPIToken() async throws -> String {
+        guard state == .authenticated,
+              let token = try await tokenStore.readToken() else {
+            throw SessionError.missingSession
+        }
+        return token
+    }
+
     public func restoreSession() async throws {
         guard let token = try await tokenStore.readToken() else {
             transition(to: nil)

@@ -1,0 +1,408 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000001 /* AppRootView.swift */; };
+		A10000000000000000000002 /* AppSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* AppSessionController.swift */; };
+		A10000000000000000000003 /* KubarOKApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000003 /* KubarOKApp.swift */; };
+		A10000000000000000000004 /* AppDesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* AppDesignSystem.swift */; };
+		A10000000000000000000005 /* KeychainTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000005 /* KeychainTokenStore.swift */; };
+		A10000000000000000000006 /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* TokenStore.swift */; };
+		A10000000000000000000007 /* RegistrationInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000007 /* RegistrationInput.swift */; };
+		A10000000000000000000008 /* SessionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* SessionAPI.swift */; };
+		A10000000000000000000009 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000009 /* SessionManager.swift */; };
+		A1000000000000000000000A /* UserFacingErrorMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000A /* UserFacingErrorMapper.swift */; };
+		A1000000000000000000000B /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000B /* LoginView.swift */; };
+		A1000000000000000000000C /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000C /* RegistrationView.swift */; };
+		A1000000000000000000000D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000D /* HomeView.swift */; };
+		A1000000000000000000000E /* ProfileOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000E /* ProfileOnboardingView.swift */; };
+		A1000000000000000000000F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000F /* Assets.xcassets */; };
+		A10000000000000000000010 /* KubarOKCore in Frameworks */ = {isa = PBXBuildFile; productRef = C10000000000000000000001 /* KubarOKCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B10000000000000000000001 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		B10000000000000000000002 /* AppSessionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionController.swift; sourceTree = "<group>"; };
+		B10000000000000000000003 /* KubarOKApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KubarOKApp.swift; sourceTree = "<group>"; };
+		B10000000000000000000004 /* AppDesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDesignSystem.swift; sourceTree = "<group>"; };
+		B10000000000000000000005 /* KeychainTokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainTokenStore.swift; sourceTree = "<group>"; };
+		B10000000000000000000006 /* TokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStore.swift; sourceTree = "<group>"; };
+		B10000000000000000000007 /* RegistrationInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationInput.swift; sourceTree = "<group>"; };
+		B10000000000000000000008 /* SessionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionAPI.swift; sourceTree = "<group>"; };
+		B10000000000000000000009 /* SessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
+		B1000000000000000000000A /* UserFacingErrorMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFacingErrorMapper.swift; sourceTree = "<group>"; };
+		B1000000000000000000000B /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000C /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000E /* ProfileOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileOnboardingView.swift; sourceTree = "<group>"; };
+		B1000000000000000000000F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B10000000000000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10000000000000000000011 /* KubarOK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KubarOK.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D10000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000010 /* KubarOKCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E10000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				E10000000000000000000002 /* App */,
+				E10000000000000000000003 /* Core */,
+				E10000000000000000000004 /* Features */,
+				E10000000000000000000005 /* Resources */,
+				E10000000000000000000006 /* Supporting */,
+				E10000000000000000000007 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E10000000000000000000002 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000001 /* AppRootView.swift */,
+				B10000000000000000000002 /* AppSessionController.swift */,
+				B10000000000000000000003 /* KubarOKApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000003 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				E10000000000000000000008 /* DesignSystem */,
+				E10000000000000000000009 /* Security */,
+				E1000000000000000000000A /* Session */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000004 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				E1000000000000000000000B /* Authentication */,
+				E1000000000000000000000C /* Home */,
+				E1000000000000000000000D /* Onboarding */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000005 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B1000000000000000000000F /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000006 /* Supporting */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000010 /* Info.plist */,
+			);
+			path = Supporting;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000007 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000011 /* KubarOK.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000008 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000004 /* AppDesignSystem.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000009 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000005 /* KeychainTokenStore.swift */,
+				B10000000000000000000006 /* TokenStore.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		E1000000000000000000000A /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000007 /* RegistrationInput.swift */,
+				B10000000000000000000008 /* SessionAPI.swift */,
+				B10000000000000000000009 /* SessionManager.swift */,
+				B1000000000000000000000A /* UserFacingErrorMapper.swift */,
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
+		E1000000000000000000000B /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				E1000000000000000000000E /* Login */,
+				E1000000000000000000000F /* Registration */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		E1000000000000000000000C /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				B1000000000000000000000D /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		E1000000000000000000000D /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				B1000000000000000000000E /* ProfileOnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		E1000000000000000000000E /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				B1000000000000000000000B /* LoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		E1000000000000000000000F /* Registration */ = {
+			isa = PBXGroup;
+			children = (
+				B1000000000000000000000C /* RegistrationView.swift */,
+			);
+			path = Registration;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F10000000000000000000001 /* KubarOK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F10000000000000000000002 /* Build configuration list for PBXNativeTarget "KubarOK" */;
+			buildPhases = (
+				D10000000000000000000002 /* Sources */,
+				D10000000000000000000001 /* Frameworks */,
+				D10000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KubarOK;
+			packageProductDependencies = (
+				C10000000000000000000001 /* KubarOKCore */,
+			);
+			productName = KubarOK;
+			productReference = B10000000000000000000011 /* KubarOK.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F10000000000000000000003 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					F10000000000000000000001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = F10000000000000000000004 /* Build configuration list for PBXProject "KubarOK" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E10000000000000000000001;
+			packageReferences = (
+				C10000000000000000000002 /* XCLocalSwiftPackageReference "KubarOKCore" */,
+			);
+			productRefGroup = E10000000000000000000007 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F10000000000000000000001 /* KubarOK */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D10000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000000000000000000000F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D10000000000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* AppRootView.swift in Sources */,
+				A10000000000000000000002 /* AppSessionController.swift in Sources */,
+				A10000000000000000000003 /* KubarOKApp.swift in Sources */,
+				A10000000000000000000004 /* AppDesignSystem.swift in Sources */,
+				A10000000000000000000005 /* KeychainTokenStore.swift in Sources */,
+				A10000000000000000000006 /* TokenStore.swift in Sources */,
+				A10000000000000000000007 /* RegistrationInput.swift in Sources */,
+				A10000000000000000000008 /* SessionAPI.swift in Sources */,
+				A10000000000000000000009 /* SessionManager.swift in Sources */,
+				A1000000000000000000000A /* UserFacingErrorMapper.swift in Sources */,
+				A1000000000000000000000B /* LoginView.swift in Sources */,
+				A1000000000000000000000C /* RegistrationView.swift in Sources */,
+				A1000000000000000000000D /* HomeView.swift in Sources */,
+				A1000000000000000000000E /* ProfileOnboardingView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F10000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F10000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		F10000000000000000000007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Supporting/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = id.go.kutaibarat.kubarok;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F10000000000000000000008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Supporting/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = id.go.kutaibarat.kubarok;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F10000000000000000000002 /* Build configuration list for PBXNativeTarget "KubarOK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F10000000000000000000007 /* Debug */,
+				F10000000000000000000008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F10000000000000000000004 /* Build configuration list for PBXProject "KubarOK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F10000000000000000000005 /* Debug */,
+				F10000000000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		C10000000000000000000002 /* XCLocalSwiftPackageReference "KubarOKCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/KubarOKCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C10000000000000000000001 /* KubarOKCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C10000000000000000000002 /* XCLocalSwiftPackageReference "KubarOKCore" */;
+			productName = KubarOKCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F10000000000000000000003 /* Project object */;
+}

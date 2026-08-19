@@ -18,6 +18,19 @@ import Testing
     #expect(detail.requisiteChecks.first?.submissionId == 82_608_160_001)
 }
 
+@Test func submissionHistoryAndTrackingDetailDecodeBackendPayloads() throws {
+    let listData = Data(#"{"data":[{"id":"0082608160001","state":1,"service_id":8,"submitter_id":9,"applicant_id":10,"submitted_at":"2026-08-16 10:00:00","service":{"id":8,"name":"KTP","description":null,"is_enable":1,"sort_order":1,"bureau_id":2,"external_link":null,"is_external":0},"progress":[]}],"links":{"first":null,"last":null,"prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"path":"https://example.test/submission","per_page":10,"to":1,"total":1}}"#.utf8)
+    let list = try JSONDecoder().decode(PaginatedResponse<SubmissionHistoryItem>.self, from: listData)
+    #expect(list.data.first?.service?.name == "KTP")
+    #expect(list.meta.perPage == 10)
+
+    let detailData = Data(#"{"data":{"id":"0082608160001","state":1,"service_id":8,"submitter_id":9,"applicant_id":10,"submitted_at":"2026-08-16 10:00:00","requisite_check":[],"validation":[{"id":4,"name":"Verifikasi","description":"Pemeriksaan","sequence":1,"service_id":8,"latest":true,"progress":{"id":7,"state":9,"notes":"Lengkap","dispatched_at":"2026-08-16 10:05:00","validated_at":"2026-08-16 10:10:00","submission_id":82608160001,"procedure_id":4,"validator_id":2}}]}}"#.utf8)
+    let detail = try JSONDecoder().decode(APIDataResponse<SubmissionDetail>.self, from: detailData).data
+    #expect(detail.validation.first?.isLatest == true)
+    #expect(detail.validation.first?.progress?.state == .accepted)
+    #expect(detail.validation.first?.progress?.notes == "Lengkap")
+}
+
 @Test func submissionInputAndAgreementRequestsUseBackendKeys() throws {
     let inputs = SubmissionInputsRequest(requisiteInputs: [SubmissionInputValue(key: "name", value: "Kubar")])
     let inputPayload = try JSONSerialization.jsonObject(with: JSONEncoder().encode(inputs)) as? [String: Any]
@@ -34,6 +47,15 @@ import Testing
     #expect(APIClient.shared.url(for: "submission/82608160001/submit-inputs/4").path.hasSuffix("/submission/82608160001/submit-inputs/4"))
     #expect(APIClient.shared.url(for: "submission/82608160001/submit-files/4").path.hasSuffix("/submission/82608160001/submit-files/4"))
     #expect(APIClient.shared.url(for: "submission/82608160001/send-submit").path.hasSuffix("/submission/82608160001/send-submit"))
+    let historyURL = APIClient.shared.url(for: "submission", queryItems: [
+        URLQueryItem(name: "state", value: "1"),
+        URLQueryItem(name: "service_id", value: "8"),
+        URLQueryItem(name: "page", value: "2")
+    ])
+    #expect(historyURL.path.hasSuffix("/submission"))
+    #expect(historyURL.query?.contains("state=1") == true)
+    #expect(historyURL.query?.contains("service_id=8") == true)
+    #expect(historyURL.query?.contains("page=2") == true)
     #expect(CatalogAPIHeaders.authenticated(apiToken: "test-token") == ["api-token": "test-token"])
 }
 

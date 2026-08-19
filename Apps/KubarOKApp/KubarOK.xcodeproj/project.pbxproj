@@ -30,6 +30,10 @@
 		A10000000000000000000015 /* CatalogStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000016 /* CatalogStateView.swift */; };
 		A10000000000000000000016 /* SubmissionFlowAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000017 /* SubmissionFlowAPI.swift */; };
 		A10000000000000000000017 /* SubmissionFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000018 /* SubmissionFlowView.swift */; };
+		A10000000000000000000018 /* SubmissionTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000019 /* SubmissionTracking.swift */; };
+		A10000000000000000000019 /* SubmissionTrackingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001A /* SubmissionTrackingAPI.swift */; };
+		A1000000000000000000001A /* SubmissionTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001B /* SubmissionTrackingView.swift */; };
+		A1000000000000000000001B /* SubmissionWorkflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001C /* SubmissionWorkflow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +61,10 @@
 		B10000000000000000000016 /* CatalogStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogStateView.swift; sourceTree = "<group>"; };
 		B10000000000000000000017 /* SubmissionFlowAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionFlowAPI.swift; sourceTree = "<group>"; };
 		B10000000000000000000018 /* SubmissionFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionFlowView.swift; sourceTree = "<group>"; };
+		B10000000000000000000019 /* SubmissionTracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionTracking.swift; sourceTree = "<group>"; };
+		B1000000000000000000001A /* SubmissionTrackingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionTrackingAPI.swift; sourceTree = "<group>"; };
+		B1000000000000000000001B /* SubmissionTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionTrackingView.swift; sourceTree = "<group>"; };
+		B1000000000000000000001C /* SubmissionWorkflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmissionWorkflow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +109,7 @@
 				E10000000000000000000009 /* Security */,
 				E1000000000000000000000A /* Session */,
 				E10000000000000000000015 /* Submission */,
+				E10000000000000000000017 /* Tracking */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -255,14 +264,29 @@
 		};
 		E10000000000000000000015 /* Submission */ = {
 			isa = PBXGroup;
-			children = (B10000000000000000000017 /* SubmissionFlowAPI.swift */,);
+			children = (
+				B10000000000000000000017 /* SubmissionFlowAPI.swift */,
+				B1000000000000000000001C /* SubmissionWorkflow.swift */,
+			);
 			path = Submission;
 			sourceTree = "<group>";
 		};
 		E10000000000000000000016 /* Submission */ = {
 			isa = PBXGroup;
-			children = (B10000000000000000000018 /* SubmissionFlowView.swift */,);
+			children = (
+				B10000000000000000000018 /* SubmissionFlowView.swift */,
+				B1000000000000000000001B /* SubmissionTrackingView.swift */,
+			);
 			path = Submission;
+			sourceTree = "<group>";
+		};
+		E10000000000000000000017 /* Tracking */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000019 /* SubmissionTracking.swift */,
+				B1000000000000000000001A /* SubmissionTrackingAPI.swift */,
+			);
+			path = Tracking;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -360,6 +384,10 @@
 				A10000000000000000000015 /* CatalogStateView.swift in Sources */,
 				A10000000000000000000016 /* SubmissionFlowAPI.swift in Sources */,
 				A10000000000000000000017 /* SubmissionFlowView.swift in Sources */,
+				A10000000000000000000018 /* SubmissionTracking.swift in Sources */,
+				A10000000000000000000019 /* SubmissionTrackingAPI.swift in Sources */,
+				A1000000000000000000001A /* SubmissionTrackingView.swift in Sources */,
+				A1000000000000000000001B /* SubmissionWorkflow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

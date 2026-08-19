@@ -1,0 +1,27 @@
+# Swift Package Manager build products and local caches
+.build/
+.swiftpm/
+
+# Xcode user and build artifacts
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.DS_Store
+
+# Environment files (keep documented examples)
+.env
+.env.*
+!.env.example
+
+# Apple signing material
+*.p12
+*.cer
+*.mobileprovision
+*.p8
+*.key
+*.pem
+
+# Android signing material, if introduced
+*.jks
+*.keystore
+key.properties

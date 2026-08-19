@@ -4,6 +4,32 @@ public final class SubmissionAPI: Sendable {
     public static let shared = SubmissionAPI()
     private init() {}
 
+    public func list(
+        apiToken: String,
+        state: SubmissionState? = nil,
+        serviceID: Int? = nil,
+        page: Int? = nil
+    ) async throws -> PaginatedResponse<SubmissionHistoryItem> {
+        var queryItems: [URLQueryItem] = []
+        if let state {
+            queryItems.append(URLQueryItem(name: "state", value: String(state.rawValue)))
+        }
+        if let serviceID {
+            queryItems.append(URLQueryItem(name: "service_id", value: String(serviceID)))
+        }
+        if let page {
+            queryItems.append(URLQueryItem(name: "page", value: String(page)))
+        }
+
+        let response = try await APIClient.shared.request(
+            path: "submission",
+            method: "GET",
+            headers: CatalogAPIHeaders.authenticated(apiToken: apiToken),
+            queryItems: queryItems
+        )
+        return try decode(PaginatedResponse<SubmissionHistoryItem>.self, from: response)
+    }
+
     public func create(apiToken: String, request: CreateSubmissionRequest) async throws -> [SubmissionRequisiteCheck] {
         let data = try JSONEncoder().encode(request)
         let response = try await APIClient.shared.request(path: "submission/store", method: "POST", body: data, headers: CatalogAPIHeaders.authenticated(apiToken: apiToken))

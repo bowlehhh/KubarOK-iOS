@@ -25,6 +25,9 @@ struct HomeView: View {
                 NavigationLink("Layanan Publik") {
                     BureauListView(sessionController: sessionController)
                 }
+                NavigationLink("Riwayat Pengajuan") {
+                    SubmissionHistoryView(sessionController: sessionController)
+                }
             }
 
             Section {

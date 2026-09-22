@@ -9,6 +9,15 @@ public struct APIDataResponse<Item: Codable & Sendable>: Codable, Sendable {
     }
 }
 
+public struct APIMessage: Codable, Sendable, Equatable {
+
+    public let message: String
+
+    public init(message: String) {
+        self.message = message
+    }
+}
+
 public struct PaginatedResponse<Item: Codable & Sendable>: Codable, Sendable {
 
     public let data: [Item]

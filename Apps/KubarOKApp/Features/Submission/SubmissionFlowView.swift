@@ -8,13 +8,25 @@ struct SubmissionFlowView: View {
     @State private var isFileImporterPresented = false
     @State private var uploadTarget: SubmissionUploadTarget?
 
-    init(sessionController: AppSessionController, serviceID: Int) {
-        _viewModel = StateObject(wrappedValue: SubmissionFlowViewModel(sessionController: sessionController, serviceID: serviceID))
+    init(
+        sessionController: AppSessionController,
+        serviceID: Int,
+        submissionID: Int64? = nil
+    ) {
+        _viewModel = StateObject(
+            wrappedValue: SubmissionFlowViewModel(
+                sessionController: sessionController,
+                serviceID: serviceID,
+                submissionID: submissionID
+            )
+        )
     }
 
     var body: some View {
         Group {
             switch viewModel.stage {
+            case .loading:
+                ProgressView("Memuat draft…")
             case .start:
                 CatalogStateView(title: "Siapkan pengajuan", message: "Buat draft untuk mengisi persyaratan.", retryTitle: viewModel.isLoading ? "Memuat…" : "Buat Draft", retry: { Task { await viewModel.createDraft() } })
             case .editing:
@@ -36,6 +48,7 @@ struct SubmissionFlowView: View {
             }
         }
         .navigationTitle("Pengajuan")
+        .task { await viewModel.loadIfNeeded() }
         .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.data]) { result in
             guard case let .success(url) = result, let target = uploadTarget else { return }
             Task { await viewModel.upload(url: url, target: target) }
@@ -55,14 +68,39 @@ struct SubmissionFlowView: View {
                         .textFieldStyle(.roundedBorder)
                 }
                 Button("Simpan isian") { Task { await viewModel.saveInputs(check) } }
-            } else if requisite?.kind == 1, let document = requisite?.documents?.first {
-                Button("Pilih dan unggah berkas") {
-                    uploadTarget = SubmissionUploadTarget(requisiteID: check.requisiteId, documentID: document.id)
-                    isFileImporterPresented = true
+                ForEach(viewModel.storedData(for: check)) { data in
+                    Button("Hapus isian tersimpan", role: .destructive) {
+                        Task { await viewModel.delete(data: data) }
+                    }
+                }
+            } else if requisite?.kind == 1, let documents = requisite?.documents {
+                ForEach(documents) { document in
+                    Button("Pilih dan unggah \(documentTitle(document))") {
+                        uploadTarget = SubmissionUploadTarget(
+                            requisiteID: check.requisiteId,
+                            documentID: document.id
+                        )
+                        isFileImporterPresented = true
+                    }
+                    ForEach(viewModel.uploadedFiles(for: document)) { uploadedFile in
+                        HStack {
+                            Text(uploadedFile.file?.fileName ?? "Berkas tersimpan")
+                                .font(.footnote)
+                            Spacer()
+                            Button("Hapus", role: .destructive) {
+                                Task { await viewModel.delete(file: uploadedFile) }
+                            }
+                        }
+                    }
                 }
             }
             if check.isCompleted != 0 { Text("Tersimpan").font(.footnote).foregroundStyle(.green) }
         }
+    }
+
+    private func documentTitle(_ document: RequisiteDocument) -> String {
+        guard let comment = document.comment, !comment.isEmpty else { return "berkas" }
+        return comment
     }
 }
 
@@ -70,9 +108,10 @@ fileprivate struct SubmissionUploadTarget { let requisiteID: Int; let documentID
 
 @MainActor
 final class SubmissionFlowViewModel: ObservableObject {
-    enum Stage { case start, editing, success(String) }
-    @Published private(set) var stage: Stage = .start
+    enum Stage { case loading, start, editing, success(String) }
+    @Published private(set) var stage: Stage
     @Published private(set) var checks: [SubmissionRequisiteCheck] = []
+    @Published private(set) var detail: SubmissionDetail?
     @Published private(set) var isLoading = false
     @Published private(set) var isSubmitting = false
     @Published private(set) var errorMessage: String?
@@ -83,9 +122,34 @@ final class SubmissionFlowViewModel: ObservableObject {
     private let api: any SubmissionFlowAPI
     private var submissionID: Int64?
 
-    init(sessionController: AppSessionController, serviceID: Int, api: any SubmissionFlowAPI = LiveSubmissionFlowAPI()) { self.sessionController = sessionController; self.serviceID = serviceID; self.api = api }
+    init(
+        sessionController: AppSessionController,
+        serviceID: Int,
+        submissionID: Int64? = nil,
+        api: any SubmissionFlowAPI = LiveSubmissionFlowAPI()
+    ) {
+        self.sessionController = sessionController
+        self.serviceID = serviceID
+        self.submissionID = submissionID
+        self.api = api
+        stage = submissionID == nil ? .start : .loading
+    }
     var allRequiredComplete: Bool { checks.allSatisfy { $0.requisite?.isRequired == 0 || $0.isCompleted != 0 } }
     func binding(for key: String) -> Binding<String> { Binding(get: { self.inputValues[key, default: ""] }, set: { self.inputValues[key] = $0 }) }
+
+    func uploadedFiles(for document: RequisiteDocument) -> [SubmissionUploadedFile] {
+        detail?.submissionFiles.filter { $0.documentId == document.id } ?? []
+    }
+
+    func storedData(for check: SubmissionRequisiteCheck) -> [SubmissionStoredData] {
+        let inputIDs = Set((check.requisite?.inputs ?? []).map(\.id))
+        return detail?.submissionData.filter { inputIDs.contains($0.inputId) } ?? []
+    }
+
+    func loadIfNeeded() async {
+        guard submissionID != nil, detail == nil else { return }
+        await reloadDetail()
+    }
 
     func createDraft() async {
         guard let user = sessionController.user, let citizen = user.citizen else { errorMessage = "Profil warga harus dilengkapi terlebih dahulu."; return }
@@ -94,7 +158,9 @@ final class SubmissionFlowViewModel: ObservableObject {
             let token = try await sessionController.activeAPIToken()
             let checks = try await api.create(apiToken: token, request: CreateSubmissionRequest(serviceId: serviceID, submitterId: user.id, applicableId: citizen.id, submittedAt: Self.dateFormatter.string(from: Date())))
             guard let submissionID = checks.first?.submissionId else { errorMessage = "Backend tidak mengembalikan ID draft karena layanan tidak memiliki persyaratan."; return }
-            self.submissionID = submissionID; self.checks = checks; stage = .editing
+            self.submissionID = submissionID
+            self.checks = checks
+            stage = .editing
         } catch { errorMessage = UserFacingErrorMapper.message(for: error) }
     }
 
@@ -112,6 +178,18 @@ final class SubmissionFlowViewModel: ObservableObject {
             await persist(check) { token, id in try await self.api.file(apiToken: token, submissionID: id, requisiteID: target.requisiteID, documentID: target.documentID, file: file) }
         } catch { errorMessage = "Berkas tidak dapat dibaca." }
     }
+    func delete(file: SubmissionUploadedFile) async {
+        await mutateDraft {
+            let token = try await self.sessionController.activeAPIToken()
+            _ = try await self.api.deleteFile(apiToken: token, submissionFileID: file.id)
+        }
+    }
+    func delete(data: SubmissionStoredData) async {
+        await mutateDraft {
+            let token = try await self.sessionController.activeAPIToken()
+            _ = try await self.api.deleteData(apiToken: token, submissionDataID: data.id)
+        }
+    }
     func send() async {
         guard let submissionID, allRequiredComplete, !isSubmitting else { return }
         isSubmitting = true; errorMessage = nil; defer { isSubmitting = false }
@@ -120,7 +198,51 @@ final class SubmissionFlowViewModel: ObservableObject {
     }
     private func persist(_ check: SubmissionRequisiteCheck, operation: (String, Int64) async throws -> [SubmissionRequisiteCheck]) async {
         guard let submissionID else { return }; isLoading = true; errorMessage = nil; defer { isLoading = false }
-        do { let token = try await sessionController.activeAPIToken(); checks = try await operation(token, submissionID) } catch { errorMessage = UserFacingErrorMapper.message(for: error) }
+        do {
+            let token = try await sessionController.activeAPIToken()
+            checks = try await operation(token, submissionID)
+            detail = try? await api.detail(apiToken: token, submissionID: submissionID)
+            synchronizeStoredInputs()
+        } catch {
+            errorMessage = UserFacingErrorMapper.message(for: error)
+        }
+    }
+    private func mutateDraft(_ operation: () async throws -> Void) async {
+        guard !isLoading else { return }
+        isLoading = true
+        errorMessage = nil
+        do {
+            try await operation()
+            isLoading = false
+            await reloadDetail()
+        } catch {
+            isLoading = false
+            errorMessage = UserFacingErrorMapper.message(for: error)
+        }
+    }
+    private func reloadDetail() async {
+        guard let submissionID, !isLoading else { return }
+        isLoading = true
+        errorMessage = nil
+        defer { isLoading = false }
+        do {
+            let token = try await sessionController.activeAPIToken()
+            let detail = try await api.detail(apiToken: token, submissionID: submissionID)
+            self.detail = detail
+            checks = detail.requisiteChecks
+            synchronizeStoredInputs()
+            stage = .editing
+        } catch {
+            stage = .start
+            errorMessage = UserFacingErrorMapper.message(for: error)
+        }
+    }
+    private func synchronizeStoredInputs() {
+        for data in detail?.submissionData ?? [] {
+            if let key = data.input?.key {
+                inputValues[key] = data.value
+            }
+        }
     }
     private static let dateFormatter: DateFormatter = { let f = DateFormatter(); f.calendar = Calendar(identifier: .gregorian); f.locale = Locale(identifier: "en_US_POSIX"); f.dateFormat = "yyyy-MM-dd HH:mm:ss"; return f }()
 }

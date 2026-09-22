@@ -60,9 +60,39 @@ public final class SubmissionAPI: Sendable {
         return try decode(APIDataResponse<SubmissionMessage>.self, from: response).data
     }
 
+    public func deleteSubmission(apiToken: String, submissionID: Int64) async throws -> APIMessage {
+        try await delete(
+            apiToken: apiToken,
+            path: "submission/\(submissionID)/delete"
+        )
+    }
+
+    public func deleteFile(apiToken: String, submissionFileID: Int) async throws -> APIMessage {
+        try await delete(
+            apiToken: apiToken,
+            path: "submission/\(submissionFileID)/delete-file"
+        )
+    }
+
+    public func deleteData(apiToken: String, submissionDataID: Int) async throws -> APIMessage {
+        try await delete(
+            apiToken: apiToken,
+            path: "submission/\(submissionDataID)/delete-data"
+        )
+    }
+
     private func postRequisite(apiToken: String, path: String, body: Data) async throws -> [SubmissionRequisiteCheck] {
         let response = try await APIClient.shared.request(path: path, method: "POST", body: body, headers: CatalogAPIHeaders.authenticated(apiToken: apiToken))
         return try decode(APIDataResponse<[SubmissionRequisiteCheck]>.self, from: response).data
+    }
+
+    private func delete(apiToken: String, path: String) async throws -> APIMessage {
+        let response = try await APIClient.shared.request(
+            path: path,
+            method: "DELETE",
+            headers: CatalogAPIHeaders.authenticated(apiToken: apiToken)
+        )
+        return try decode(APIDataResponse<APIMessage>.self, from: response).data
     }
 
     private func decode<Response: Decodable>(_ type: Response.Type, from data: Data) throws -> Response {

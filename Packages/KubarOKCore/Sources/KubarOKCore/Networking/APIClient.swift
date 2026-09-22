@@ -31,6 +31,7 @@ public final class APIClient: Sendable {
         let url = url(for: path, queryItems: queryItems)
         var request = URLRequest(url: url)
         request.httpMethod = method
+        request.timeoutInterval = APIConfig.requestTimeout
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
         if body != nil {

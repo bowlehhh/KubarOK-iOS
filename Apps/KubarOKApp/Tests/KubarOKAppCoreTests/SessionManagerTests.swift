@@ -74,6 +74,38 @@ import KubarOKCore
     #expect(input.validationError == .passwordsDoNotMatch)
 }
 
+@Test func registrationInputMatchesBackendPasswordPolicy() {
+    let weak = RegistrationInput(
+        name: "Test User",
+        email: "user@example.com",
+        phone: "08123456789",
+        password: "password",
+        confirmationPassword: "password"
+    )
+    let valid = RegistrationInput(
+        name: "Test User",
+        email: "user@example.com",
+        phone: "08123456789",
+        password: "Password1!",
+        confirmationPassword: "Password1!"
+    )
+
+    #expect(weak.validationError == .weakPassword)
+    #expect(valid.validationError == nil)
+}
+
+@Test func backendInvalidToken404ClearsStoredSession() async {
+    let store = InMemoryTokenStore(token: "expired-token")
+    let manager = SessionManager(tokenStore: store, api: InvalidTokenSessionAPI())
+
+    await #expect(throws: APIError.self) {
+        try await manager.restoreSession()
+    }
+
+    #expect(await store.readToken() == nil)
+    #expect(await manager.snapshot().state == .unauthenticated)
+}
+
 private struct StubSessionAPI: SessionAPI {
 
     let user: UserProfile?
@@ -114,6 +146,31 @@ private enum StubSessionAPIError: Error, Equatable {
 
     case loginFailed
     case userUnavailable
+}
+
+private struct InvalidTokenSessionAPI: SessionAPI {
+
+    func login(login: String, password: String) async throws -> AuthSession {
+        throw StubSessionAPIError.loginFailed
+    }
+
+    func register(input: RegistrationInput) async throws {}
+
+    func fetchUser(apiToken: String) async throws -> UserProfile {
+        throw APIError.httpError(
+            statusCode: 404,
+            body: #"{"error":"api-token yang anda masukan tidak valid!"}"#
+        )
+    }
+
+    func updateProfile(
+        apiToken: String,
+        request: CitizenProfileRequest
+    ) async throws -> Citizen {
+        makeCitizen()
+    }
+
+    func logout(apiToken: String) async throws {}
 }
 
 private func makeLoginUser() -> User {

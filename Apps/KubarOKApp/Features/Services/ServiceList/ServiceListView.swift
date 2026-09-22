@@ -60,6 +60,14 @@ struct ServiceListView: View {
             }
         }
         .navigationTitle(bureau.shortName ?? "Layanan")
+        .searchable(text: $viewModel.query, prompt: "Cari layanan")
+        .onSubmit(of: .search) { Task { await viewModel.loadFirstPage() } }
+        .onChange(of: viewModel.query) { value in
+            if value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Task { await viewModel.loadFirstPage() }
+            }
+        }
+        .refreshable { await viewModel.loadFirstPage() }
         .task { await viewModel.loadFirstPage() }
     }
 }
@@ -70,6 +78,7 @@ final class ServiceListViewModel: ObservableObject {
     @Published private(set) var services: [GovernmentService] = []
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
+    @Published var query = ""
 
     private let sessionController: AppSessionController
     private let catalogAPI: any ServiceCatalogAPI
@@ -101,17 +110,28 @@ final class ServiceListViewModel: ObservableObject {
     }
 
     private func load(page: Int, replacingExisting: Bool) async {
+        guard !isLoading else { return }
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
 
         do {
             let token = try await sessionController.activeAPIToken()
-            let response = try await catalogAPI.fetchServices(
-                apiToken: token,
-                bureauID: bureauID,
-                page: page
-            )
+            let search = query.trimmingCharacters(in: .whitespacesAndNewlines)
+            let response = if search.isEmpty {
+                try await catalogAPI.fetchServices(
+                    apiToken: token,
+                    bureauID: bureauID,
+                    page: page
+                )
+            } else {
+                try await catalogAPI.searchServices(
+                    apiToken: token,
+                    name: search,
+                    bureauID: bureauID,
+                    page: page
+                )
+            }
             services = replacingExisting ? response.data : services + response.data
             pagination = response.meta
         } catch {

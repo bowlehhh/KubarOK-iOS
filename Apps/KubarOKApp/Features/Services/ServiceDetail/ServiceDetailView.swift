@@ -70,8 +70,23 @@ struct ServiceDetailView: View {
                     }
 
                     Section {
-                        NavigationLink("Ajukan Layanan") {
-                            SubmissionFlowView(sessionController: viewModel.sessionController, serviceID: service.id)
+                        if service.isExternal != 0,
+                           let link = service.externalLink,
+                           let url = URL(string: link),
+                           let scheme = url.scheme?.lowercased(),
+                           scheme == "https" || scheme == "http" {
+                            Link("Buka Layanan Eksternal", destination: url)
+                        } else if viewModel.sessionController.user?.isActivated == true {
+                            NavigationLink("Ajukan Layanan") {
+                                SubmissionFlowView(
+                                    sessionController: viewModel.sessionController,
+                                    serviceID: service.id
+                                )
+                            }
+                        } else {
+                            NavigationLink("Verifikasi nomor HP untuk mengajukan") {
+                                PhoneVerificationView(sessionController: viewModel.sessionController)
+                            }
                         }
                     }
                 }

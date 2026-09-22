@@ -204,6 +204,9 @@ public struct SubmissionDetail: Codable, Sendable {
     public let updatedAt: String?
     public let service: GovernmentService?
     public let validation: [SubmissionValidationProcedure]
+    public let products: [SubmissionProduct]
+    public let submissionFiles: [SubmissionUploadedFile]
+    public let submissionData: [SubmissionStoredData]
 
     public init(
         id: String,
@@ -218,7 +221,10 @@ public struct SubmissionDetail: Codable, Sendable {
         createdAt: String? = nil,
         updatedAt: String? = nil,
         service: GovernmentService? = nil,
-        validation: [SubmissionValidationProcedure] = []
+        validation: [SubmissionValidationProcedure] = [],
+        products: [SubmissionProduct] = [],
+        submissionFiles: [SubmissionUploadedFile] = [],
+        submissionData: [SubmissionStoredData] = []
     ) {
         self.id = id
         self.state = state
@@ -233,6 +239,9 @@ public struct SubmissionDetail: Codable, Sendable {
         self.updatedAt = updatedAt
         self.service = service
         self.validation = validation
+        self.products = products
+        self.submissionFiles = submissionFiles
+        self.submissionData = submissionData
     }
 
     enum CodingKeys: String, CodingKey {
@@ -249,6 +258,9 @@ public struct SubmissionDetail: Codable, Sendable {
         case updatedAt = "updated_at"
         case service
         case validation
+        case products
+        case submissionFiles = "submission_files"
+        case submissionData = "submission_data"
     }
 
     public init(from decoder: Decoder) throws {
@@ -266,6 +278,65 @@ public struct SubmissionDetail: Codable, Sendable {
         updatedAt = try container.decodeIfPresent(String.self, forKey: .updatedAt)
         service = try container.decodeIfPresent(GovernmentService.self, forKey: .service)
         validation = try container.decodeIfPresent([SubmissionValidationProcedure].self, forKey: .validation) ?? []
+        products = try container.decodeIfPresent([SubmissionProduct].self, forKey: .products) ?? []
+        submissionFiles = try container.decodeIfPresent([SubmissionUploadedFile].self, forKey: .submissionFiles) ?? []
+        submissionData = try container.decodeIfPresent([SubmissionStoredData].self, forKey: .submissionData) ?? []
+    }
+}
+
+public struct SubmissionProduct: Codable, Sendable, Identifiable {
+    public let id: Int
+    public let reference: String?
+    public let issueDate: String?
+    public let notes: String?
+    public let submissionId: Int64?
+    public let issuer: Bureau?
+    public let file: RemoteFile?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case reference = "ref"
+        case issueDate = "issue_date"
+        case notes
+        case submissionId = "submission_id"
+        case issuer
+        case file
+    }
+}
+
+public struct SubmissionUploadedFile: Codable, Sendable, Identifiable {
+    public let id: Int
+    public let notes: String?
+    public let submissionId: Int64
+    public let documentId: Int
+    public let fileId: Int?
+    public let document: RequisiteDocument?
+    public let file: RemoteFile?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case notes
+        case submissionId = "submission_id"
+        case documentId = "document_id"
+        case fileId = "file_id"
+        case document
+        case file
+    }
+}
+
+public struct SubmissionStoredData: Codable, Sendable, Identifiable {
+    public let id: Int
+    public let value: String
+    public let submissionId: Int64
+    public let inputId: Int
+    public let input: RequisiteInput?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case value
+        case submissionId = "submission_id"
+        case inputId = "input_id"
+        case input
     }
 }
 

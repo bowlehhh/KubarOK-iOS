@@ -70,6 +70,23 @@ public actor SessionManager {
         }
     }
 
+    public func refreshUser() async throws {
+        guard let token = try await tokenStore.readToken() else {
+            transition(to: nil)
+            throw SessionError.missingSession
+        }
+
+        do {
+            transition(to: try await api.fetchUser(apiToken: token))
+        } catch {
+            if isInvalidToken(error) {
+                try? await tokenStore.deleteToken()
+                transition(to: nil)
+            }
+            throw error
+        }
+    }
+
     public func login(login: String, password: String) async throws {
         let session = try await api.login(login: login, password: password)
         try await establishSession(apiToken: session.apiToken)
@@ -144,9 +161,14 @@ public actor SessionManager {
     }
 
     private func isInvalidToken(_ error: Error) -> Bool {
-        guard case let APIError.httpError(statusCode, _) = error else {
+        guard case let apiError as APIError = error,
+              case let .httpError(statusCode, _) = apiError else {
             return false
         }
-        return statusCode == 401 || statusCode == 403
+        if statusCode == 401 || statusCode == 403 {
+            return true
+        }
+        guard statusCode == 400 || statusCode == 404 else { return false }
+        return apiError.backendMessage?.localizedCaseInsensitiveContains("api-token") == true
     }
 }

@@ -75,6 +75,18 @@ final class AppSessionController: ObservableObject {
         try await sessionManager.activeAPIToken()
     }
 
+    func refreshUser() async throws {
+        errorMessage = nil
+        do {
+            try await sessionManager.refreshUser()
+        } catch {
+            errorMessage = UserFacingErrorMapper.message(for: error)
+            await synchronize()
+            throw error
+        }
+        await synchronize()
+    }
+
     private func synchronize() async {
         let snapshot = await sessionManager.snapshot()
         state = snapshot.state

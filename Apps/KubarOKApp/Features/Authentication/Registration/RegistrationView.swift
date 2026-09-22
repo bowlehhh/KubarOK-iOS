@@ -27,6 +27,9 @@ struct RegistrationView: View {
                     .textContentType(.newPassword)
                 SecureField("Konfirmasi password", text: $viewModel.confirmationPassword)
                     .textContentType(.newPassword)
+                Text(PasswordPolicy.guidance)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
 
             if let errorMessage = viewModel.errorMessage {

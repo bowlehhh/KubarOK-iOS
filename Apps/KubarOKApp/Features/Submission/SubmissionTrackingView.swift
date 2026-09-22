@@ -6,6 +6,8 @@ struct SubmissionHistoryView: View {
 
     @StateObject private var viewModel: SubmissionHistoryViewModel
     @ObservedObject private var sessionController: AppSessionController
+    @State private var pendingDeletion: SubmissionHistoryItem?
+    @State private var confirmsDeletion = false
 
     init(sessionController: AppSessionController) {
         self.sessionController = sessionController
@@ -36,6 +38,14 @@ struct SubmissionHistoryView: View {
                         } label: {
                             SubmissionHistoryRow(submission: submission)
                         }
+                        .swipeActions {
+                            if submission.state == .draft {
+                                Button("Hapus", role: .destructive) {
+                                    pendingDeletion = submission
+                                    confirmsDeletion = true
+                                }
+                            }
+                        }
                     }
 
                     if viewModel.history.canLoadNextPage {
@@ -47,9 +57,19 @@ struct SubmissionHistoryView: View {
                 }
             }
         }
+        .confirmationDialog(
+            "Hapus draft pengajuan?",
+            isPresented: $confirmsDeletion,
+            titleVisibility: .visible
+        ) {
+            Button("Hapus draft", role: .destructive) {
+                guard let pendingDeletion else { return }
+                Task { await viewModel.delete(pendingDeletion) }
+            }
+        }
         .navigationTitle("Riwayat Pengajuan")
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
                     Button("Semua status") { Task { await viewModel.selectFilter(nil) } }
                     ForEach(SubmissionState.allCases, id: \.rawValue) { state in
@@ -133,6 +153,43 @@ struct SubmissionTrackingDetailView: View {
                     Section("Persyaratan") {
                         let completed = detail.requisiteChecks.filter { $0.isCompleted != 0 }.count
                         LabeledContent("Terpenuhi", value: "\(completed) dari \(detail.requisiteChecks.count)")
+                    }
+
+                    if detail.state == .draft,
+                       let submissionID = Int64(detail.id) {
+                        Section {
+                            if viewModel.sessionController.user?.isActivated == true {
+                                NavigationLink("Lanjutkan Draft") {
+                                    SubmissionFlowView(
+                                        sessionController: viewModel.sessionController,
+                                        serviceID: detail.serviceId,
+                                        submissionID: submissionID
+                                    )
+                                }
+                            } else {
+                                NavigationLink("Verifikasi nomor HP untuk melanjutkan") {
+                                    PhoneVerificationView(
+                                        sessionController: viewModel.sessionController
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    if !detail.products.isEmpty {
+                        Section("Dokumen Hasil") {
+                            ForEach(detail.products) { product in
+                                VStack(alignment: .leading, spacing: AppSpacing.extraSmall) {
+                                    Text(product.reference ?? "Dokumen hasil")
+                                    if let issueDate = product.issueDate {
+                                        Text(issueDate).font(.footnote).foregroundStyle(.secondary)
+                                    }
+                                    if let path = product.file?.path, let url = URL(string: path) {
+                                        Link("Buka dokumen", destination: url)
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     Section("Progress") {
@@ -232,6 +289,26 @@ private final class SubmissionHistoryViewModel: ObservableObject {
         await load(page: nextPage, replacingExisting: false)
     }
 
+    func delete(_ submission: SubmissionHistoryItem) async {
+        guard submission.state == .draft,
+              let submissionID = Int64(submission.id),
+              !isLoading else { return }
+        isLoading = true
+        errorMessage = nil
+        do {
+            let token = try await sessionController.activeAPIToken()
+            _ = try await trackingAPI.deleteSubmission(
+                apiToken: token,
+                submissionID: submissionID
+            )
+            isLoading = false
+            await loadFirstPage()
+        } catch {
+            isLoading = false
+            errorMessage = UserFacingErrorMapper.message(for: error)
+        }
+    }
+
     private func load(page: Int, replacingExisting: Bool) async {
         guard !isLoading else { return }
         isLoading = true
@@ -263,7 +340,7 @@ private final class SubmissionTrackingDetailViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
 
-    private let sessionController: AppSessionController
+    let sessionController: AppSessionController
     private let trackingAPI: any SubmissionTrackingAPI
     private let submissionID: String
 

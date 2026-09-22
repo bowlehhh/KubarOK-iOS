@@ -6,16 +6,21 @@ struct ProfileOnboardingView: View {
 
     @StateObject private var viewModel: ProfileOnboardingViewModel
 
-    init(sessionController: AppSessionController) {
+    init(sessionController: AppSessionController, citizen: Citizen? = nil) {
         _viewModel = StateObject(
-            wrappedValue: ProfileOnboardingViewModel(sessionController: sessionController)
+            wrappedValue: ProfileOnboardingViewModel(
+                sessionController: sessionController,
+                citizen: citizen
+            )
         )
     }
 
     var body: some View {
         Form {
             Section {
-                Text("Lengkapi profil warga untuk melanjutkan.")
+                Text(viewModel.isEditing
+                     ? "Perbarui profil warga Anda."
+                     : "Lengkapi profil warga untuk melanjutkan.")
                     .foregroundStyle(.secondary)
             }
 
@@ -58,7 +63,7 @@ struct ProfileOnboardingView: View {
                 }
             }
         }
-        .navigationTitle("Profil warga")
+        .navigationTitle(viewModel.isEditing ? "Edit Profil Warga" : "Profil Warga")
     }
 }
 
@@ -76,9 +81,23 @@ final class ProfileOnboardingViewModel: ObservableObject {
     @Published private(set) var errorMessage: String?
 
     private let sessionController: AppSessionController
+    let isEditing: Bool
 
-    init(sessionController: AppSessionController) {
+    init(sessionController: AppSessionController, citizen: Citizen? = nil) {
         self.sessionController = sessionController
+        isEditing = citizen != nil
+        if let citizen {
+            applicableId = citizen.applicableId
+            name = citizen.fullName
+            kkNumber = citizen.kkNumber ?? ""
+            birthPlace = citizen.birthPlace
+            sex = citizen.sex
+            citizenship = citizen.citizenship
+            if let birthDate = citizen.birthDate,
+               let parsedDate = Self.backendDateFormatter.date(from: birthDate) {
+                self.birthDate = parsedDate
+            }
+        }
     }
 
     func submit() async {

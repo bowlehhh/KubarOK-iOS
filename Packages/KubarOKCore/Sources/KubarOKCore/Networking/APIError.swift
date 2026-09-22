@@ -15,8 +15,8 @@ public enum APIError: Error, LocalizedError {
         case .httpError(let statusCode, let body):
             var description = "Server mengembalikan HTTP status \(statusCode)."
 
-            if let body, !body.isEmpty {
-                description += " Response backend: \(body)"
+            if let message = Self.extractBackendMessage(from: body) {
+                description += " \(message)"
             }
 
             return description
@@ -27,5 +27,42 @@ public enum APIError: Error, LocalizedError {
         case .network(let error):
             return "Terjadi kesalahan jaringan: \(error.localizedDescription)"
         }
+    }
+
+    /// Extracts Laravel/October API validation messages without exposing an
+    /// entire response body that may contain account data.
+    public var backendMessage: String? {
+        guard case .httpError(_, let body) = self else { return nil }
+        return Self.extractBackendMessage(from: body)
+    }
+
+    private static func extractBackendMessage(from body: String?) -> String? {
+        guard let body, !body.isEmpty, let data = body.data(using: .utf8) else {
+            return nil
+        }
+
+        guard let json = try? JSONSerialization.jsonObject(with: data),
+              let object = json as? [String: Any],
+              let error = object["error"] ?? object["message"] else {
+            return nil
+        }
+
+        return flatten(error).first
+    }
+
+    private static func flatten(_ value: Any) -> [String] {
+        if let string = value as? String {
+            return string.isEmpty ? [] : [string]
+        }
+        if let values = value as? [Any] {
+            return values.flatMap(flatten)
+        }
+        if let values = value as? [String: Any] {
+            return values.keys.sorted().flatMap { key -> [String] in
+                guard let nested = values[key] else { return [] }
+                return flatten(nested).map { "\(key): \($0)" }
+            }
+        }
+        return []
     }
 }

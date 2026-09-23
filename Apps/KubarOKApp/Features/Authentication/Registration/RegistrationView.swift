@@ -4,10 +4,17 @@ import SwiftUI
 struct RegistrationView: View {
 
     @StateObject private var viewModel: RegistrationViewModel
-    @Environment(\.dismiss) private var dismiss
     @State private var isPasswordVisible = false
+    private let showLogin: () -> Void
+    private let showPublicHome: () -> Void
 
-    init(sessionController: AppSessionController) {
+    init(
+        sessionController: AppSessionController,
+        showLogin: @escaping () -> Void,
+        showPublicHome: @escaping () -> Void
+    ) {
+        self.showLogin = showLogin
+        self.showPublicHome = showPublicHome
         _viewModel = StateObject(
             wrappedValue: RegistrationViewModel(sessionController: sessionController)
         )
@@ -22,7 +29,7 @@ struct RegistrationView: View {
                 VStack(alignment: .leading, spacing: AppSpacing.medium) {
                     KubarOKTopBar()
                         .overlay(alignment: .leading) {
-                            Button(action: { dismiss() }) {
+                            Button(action: showPublicHome) {
                                 Image(systemName: "chevron.left")
                                     .font(.headline)
                                     .foregroundStyle(.white)
@@ -87,7 +94,7 @@ struct RegistrationView: View {
 
                     HStack(spacing: AppSpacing.extraSmall) {
                         Text("Sudah memiliki akun?")
-                        Button("Login") { dismiss() }
+                        Button("Login", action: showLogin)
                             .foregroundStyle(AppColors.green)
                     }
                     .font(.caption)

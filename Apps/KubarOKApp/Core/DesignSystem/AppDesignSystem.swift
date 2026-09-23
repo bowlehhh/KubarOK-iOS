@@ -59,6 +59,23 @@ struct KubarOKButtonStyle: ButtonStyle {
     }
 }
 
+struct KubarOKOutlinedButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.subheadline.weight(.semibold))
+            .tracking(1.1)
+            .textCase(.uppercase)
+            .foregroundStyle(AppColors.green)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .background(Color.white)
+            .overlay {
+                RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous)
+                    .stroke(AppColors.green, lineWidth: 1)
+            }
+            .opacity(configuration.isPressed ? 0.68 : 1)
+    }
+}
+
 struct KubarOKField<Content: View>: View {
     let content: Content
 

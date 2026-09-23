@@ -13,7 +13,7 @@ Sumber desain: `01 - Mockup Online Kubar ios` (`CGkfnAOPxUia9LEjsG1DKp`), dibaca
 | Kelompok | Frame Figma | Node ID | Ukuran | File SwiftUI | Status | API/Service | Tindakan |
 |---|---|---:|---:|---|---|---|---|
 | Splash | Splash Screen | `1:2201` | 393×852 | `App/AppRootView.swift` | Diimplementasikan | `AppSessionController.restore` | Aset logo dan dekorasi responsif |
-| Onboarding | Beranda | `227:1006` | 393×852 | `App/AppRootView.swift` | Diimplementasikan | — | Tiga kartu berita dan aksi Login |
+| Beranda publik | Beranda | `227:1006` | 393×852 | `App/AppRootView.swift` (`PublicHomeView`) | Diimplementasikan | — | Tiga kartu berita, aksi Login dan Daftar; tersedia tanpa autentikasi |
 | Login | LOGIN | `11:322` | 393×852 | `Features/Authentication/Login/LoginView.swift` | Diimplementasikan | `SessionManager`, `AuthService` | Layout Figma, loading/error/disabled, show password |
 | Notifikasi | Info | `58:867` | 393×852 | `Features/Home/HomeView.swift` (`NotificationListView`) | Tersedia, desain berbeda | `NotificationService` | Tahap notifikasi |
 | Riwayat | Daftar Pengajuan | `73:1450` | 393×852 | `Features/Submission/SubmissionTrackingView.swift` | Tersedia, desain berbeda | `SubmissionTrackingAPI` | Tahap riwayat |

@@ -7,9 +7,17 @@ struct LoginView: View {
     @StateObject private var viewModel: LoginViewModel
     @ObservedObject private var sessionController: AppSessionController
     @State private var isPasswordVisible = false
+    private let showPublicHome: () -> Void
+    private let showRegistration: () -> Void
 
-    init(sessionController: AppSessionController) {
+    init(
+        sessionController: AppSessionController,
+        showPublicHome: @escaping () -> Void,
+        showRegistration: @escaping () -> Void
+    ) {
         self.sessionController = sessionController
+        self.showPublicHome = showPublicHome
+        self.showRegistration = showRegistration
         _viewModel = StateObject(
             wrappedValue: LoginViewModel(sessionController: sessionController)
         )
@@ -23,6 +31,15 @@ struct LoginView: View {
             ScrollView {
                 VStack(spacing: AppSpacing.medium) {
                     KubarOKTopBar()
+                        .overlay(alignment: .leading) {
+                            Button(action: showPublicHome) {
+                                Image(systemName: "chevron.left")
+                                    .font(.headline)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 44, height: 44)
+                            }
+                            .accessibilityLabel("Kembali ke Beranda")
+                        }
                         .padding(.horizontal, -AppSpacing.large)
 
                     Image("LoginIllustration")
@@ -96,10 +113,9 @@ struct LoginView: View {
 
                     HStack(spacing: AppSpacing.extraSmall) {
                         Text("Belum punya akun?")
-                        NavigationLink("Register disini") {
-                            RegistrationView(sessionController: sessionController)
-                        }
-                        .foregroundStyle(AppColors.green)
+                        Button("Register disini", action: showRegistration)
+                            .buttonStyle(.plain)
+                            .foregroundStyle(AppColors.green)
                     }
                     .font(.caption)
                 }

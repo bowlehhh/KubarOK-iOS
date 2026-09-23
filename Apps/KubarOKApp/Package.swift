@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "KubarOKApp",
+    platforms: [.iOS(.v16)],
     products: [
         .library(name: "KubarOKAppCore", targets: ["KubarOKAppCore"])
     ],

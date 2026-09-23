@@ -6,6 +6,7 @@ struct LoginView: View {
 
     @StateObject private var viewModel: LoginViewModel
     @ObservedObject private var sessionController: AppSessionController
+    @State private var isPasswordVisible = false
 
     init(sessionController: AppSessionController) {
         self.sessionController = sessionController
@@ -15,51 +16,98 @@ struct LoginView: View {
     }
 
     var body: some View {
-        VStack(spacing: AppSpacing.large) {
-            VStack(spacing: AppSpacing.small) {
-                Text("KUBAR OK")
-                    .font(.largeTitle.bold())
-                Text("Masuk untuk melanjutkan layanan Anda.")
+        ZStack {
+            Color.white.ignoresSafeArea()
+            KubarOKDecorativeBackground().ignoresSafeArea()
+
+            ScrollView {
+                VStack(spacing: AppSpacing.medium) {
+                    KubarOKTopBar()
+                        .padding(.horizontal, -AppSpacing.large)
+
+                    Image("LoginIllustration")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 162)
+                        .padding(.top, AppSpacing.extraLarge)
+                        .accessibilityHidden(true)
+
+                    Text("Silahkan Login/register terlebih dahulu")
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                        .padding(.bottom, AppSpacing.extraLarge)
+
+                    KubarOKField {
+                        TextField("Email/No. Hp:", text: $viewModel.login)
+                            .textContentType(.username)
+                            .textInputAutocapitalization(.never)
+                            .autocorrectionDisabled()
+                            .submitLabel(.next)
+                    }
+
+                    KubarOKField {
+                        HStack {
+                            Group {
+                                if isPasswordVisible {
+                                    TextField("Password:", text: $viewModel.password)
+                                } else {
+                                    SecureField("Password:", text: $viewModel.password)
+                                }
+                            }
+                            .textContentType(.password)
+
+                            Button {
+                                isPasswordVisible.toggle()
+                            } label: {
+                                Image(systemName: isPasswordVisible ? "eye" : "eye.slash")
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel(isPasswordVisible ? "Sembunyikan password" : "Tampilkan password")
+                        }
+                    }
+
+                    NavigationLink("Lupa password?") {
+                        ForgotPasswordView()
+                    }
+                    .font(.caption)
                     .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+
+                    if let errorMessage = viewModel.errorMessage ?? sessionController.errorMessage {
+                        Text(errorMessage)
+                            .foregroundStyle(AppColors.red)
+                            .font(.footnote)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .accessibilityLabel("Kesalahan: \(errorMessage)")
+                    }
+
+                    Button {
+                        Task { await viewModel.submit() }
+                    } label: {
+                        if viewModel.isLoading {
+                            ProgressView().tint(.white)
+                        } else {
+                            Text("Login")
+                        }
+                    }
+                    .buttonStyle(KubarOKButtonStyle())
+                    .disabled(viewModel.isLoading || viewModel.login.isEmpty || viewModel.password.isEmpty)
+                    .opacity(viewModel.login.isEmpty || viewModel.password.isEmpty ? 0.55 : 1)
+
+                    HStack(spacing: AppSpacing.extraSmall) {
+                        Text("Belum punya akun?")
+                        NavigationLink("Register disini") {
+                            RegistrationView(sessionController: sessionController)
+                        }
+                        .foregroundStyle(AppColors.green)
+                    }
+                    .font(.caption)
+                }
+                .padding(.horizontal, AppSpacing.large)
+                .padding(.bottom, 220)
             }
-
-            VStack(spacing: AppSpacing.medium) {
-                TextField("Email atau nomor HP", text: $viewModel.login)
-                    .textContentType(.username)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .textFieldStyle(.roundedBorder)
-
-                SecureField("Password", text: $viewModel.password)
-                    .textContentType(.password)
-                    .textFieldStyle(.roundedBorder)
-            }
-
-            if let errorMessage = viewModel.errorMessage ?? sessionController.errorMessage {
-                Text(errorMessage)
-                    .foregroundStyle(.red)
-                    .font(.footnote)
-            }
-
-            Button("Masuk") {
-                Task { await viewModel.submit() }
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(viewModel.isLoading || viewModel.login.isEmpty || viewModel.password.isEmpty)
-
-            if viewModel.isLoading {
-                ProgressView()
-            }
-
-            NavigationLink("Belum punya akun? Daftar", destination: {
-                RegistrationView(sessionController: sessionController)
-            })
-
-            NavigationLink("Lupa password?", destination: {
-                ForgotPasswordView()
-            })
+            .scrollDismissesKeyboard(.interactively)
         }
-        .navigationTitle("Masuk")
     }
 }
 

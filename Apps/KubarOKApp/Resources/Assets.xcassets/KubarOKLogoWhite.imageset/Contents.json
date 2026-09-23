@@ -1,0 +1,7 @@
+{
+  "images" : [
+    { "filename" : "kubarok-logo-white.svg", "idiom" : "universal" }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 },
+  "properties" : { "preserves-vector-representation" : true }
+}

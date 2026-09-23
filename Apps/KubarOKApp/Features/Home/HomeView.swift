@@ -5,16 +5,150 @@ import KubarOKCore
 struct HomeView: View {
 
     @ObservedObject var sessionController: AppSessionController
+    @State private var selectedTab = HomeTab.home
+
+    private enum HomeTab: Hashable {
+        case home
+        case services
+        case submissions
+        case account
+    }
 
     var body: some View {
-        List {
-            Section {
-                Text("KUBAR OK")
-                    .font(.largeTitle.bold())
-                Text("Selamat datang, \(sessionController.user?.name ?? sessionController.user?.email ?? "Pengguna")")
-                    .font(.title3)
-            }
+        TabView(selection: $selectedTab) {
+            homeDashboard
+                .tag(HomeTab.home)
+                .tabItem { Label("Beranda", systemImage: "house.fill") }
 
+            BureauListView(sessionController: sessionController)
+                .tag(HomeTab.services)
+                .tabItem { Label("Layanan", systemImage: "building.2.fill") }
+
+            SubmissionHistoryView(sessionController: sessionController)
+                .tag(HomeTab.submissions)
+                .tabItem { Label("Pengajuan", systemImage: "doc.text.fill") }
+
+            accountView
+                .tag(HomeTab.account)
+                .tabItem { Label("Akun", systemImage: "person.fill") }
+        }
+        .tint(AppColors.green)
+    }
+
+    private var homeDashboard: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: AppSpacing.large) {
+                ZStack(alignment: .top) {
+                    AppColors.prussianBlue
+                    VStack(spacing: AppSpacing.regular) {
+                        HStack {
+                            Image("KubarOKLogoWhite")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 55, height: 36)
+                                .accessibilityLabel("KubarOK")
+                            Spacer()
+                            NavigationLink {
+                                NotificationListView(sessionController: sessionController)
+                            } label: {
+                                Image(systemName: "bell.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 44, height: 44)
+                            }
+                            .accessibilityLabel("Notifikasi")
+                        }
+
+                        HStack(spacing: AppSpacing.regular) {
+                            VStack(alignment: .leading, spacing: AppSpacing.small) {
+                                Text("Halo, \(sessionController.user?.name ?? sessionController.user?.email ?? "Pengguna")")
+                                    .font(.title3.weight(.semibold))
+                                Text("Dapatkan kemudahan dan kenyamanan untuk setiap informasi dan layanan publik warga Kubar")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Image("HomeIllustration")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 125, height: 95)
+                                .accessibilityHidden(true)
+                        }
+                        .padding(AppSpacing.medium)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous))
+                    }
+                    .padding(.horizontal, AppSpacing.large)
+                    .padding(.bottom, AppSpacing.extraLarge)
+                }
+
+                dashboardSection(title: "Layanan Populer", icon: "star.fill") {
+                    Button("Lihat Semua >>") { selectedTab = .services }
+                        .font(.caption)
+                        .foregroundStyle(AppColors.green)
+                } content: {
+                    HStack(spacing: AppSpacing.regular) {
+                        dashboardTile(title: "SP4N LAPOR", systemImage: "megaphone.fill") {
+                            selectedTab = .services
+                        }
+                        dashboardTile(title: "PEREKAMAN KTP EL", systemImage: "person.text.rectangle.fill") {
+                            selectedTab = .services
+                        }
+                    }
+                }
+
+                dashboardSection(title: "Dinas Populer", icon: "building.2.fill") {
+                    Button("Lihat Semua >>") { selectedTab = .services }
+                        .font(.caption)
+                        .foregroundStyle(AppColors.green)
+                } content: {
+                    Button {
+                        selectedTab = .services
+                    } label: {
+                        HStack(spacing: AppSpacing.medium) {
+                            ForEach(["DUKCAPIL", "SOSIAL", "BKAD", "PUPR"], id: \.self) { name in
+                                Text(name)
+                                    .font(.caption2.weight(.bold))
+                                    .foregroundStyle(.white)
+                                    .frame(width: 64, height: 64)
+                                    .background(AppColors.prussianBlue.opacity(0.92))
+                                    .clipShape(Circle())
+                            }
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                dashboardSection(title: "Data Pengajuan Saya", icon: "doc.text.fill") {
+                    Button("Lihat Semua >>") { selectedTab = .submissions }
+                        .font(.caption)
+                        .foregroundStyle(AppColors.green)
+                } content: {
+                    Button {
+                        selectedTab = .submissions
+                    } label: {
+                        VStack(alignment: .leading, spacing: AppSpacing.small) {
+                            Text("Pantau status pengajuan layanan Anda")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Label("Buka daftar pengajuan", systemImage: "arrow.right.circle.fill")
+                                .font(.caption)
+                                .foregroundStyle(AppColors.green)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(AppSpacing.medium)
+                        .background(Color.gray.opacity(0.16))
+                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.bottom, AppSpacing.large)
+        }
+        .background(Color.white)
+    }
+
+    private var accountView: some View {
+        List {
             Section("Informasi akun") {
                 LabeledContent("Nama", value: sessionController.user?.name ?? "-")
                 LabeledContent("Email", value: sessionController.user?.email ?? "-")
@@ -26,43 +160,68 @@ struct HomeView: View {
                     }
                 }
             }
-
-            Section("Layanan") {
-                NavigationLink("Layanan Publik") {
-                    BureauListView(sessionController: sessionController)
-                }
-                NavigationLink("Riwayat Pengajuan") {
-                    SubmissionHistoryView(sessionController: sessionController)
-                }
-                NavigationLink("Informasi Terbaru") {
-                    InformationListView(sessionController: sessionController)
-                }
-                NavigationLink("Notifikasi") {
-                    NotificationListView(sessionController: sessionController)
-                }
-            }
-
             Section("Pengaturan") {
                 NavigationLink("Edit Akun") {
                     AccountEditView(sessionController: sessionController)
                 }
                 if let citizen = sessionController.user?.citizen {
                     NavigationLink("Edit Profil Warga") {
-                        ProfileOnboardingView(
-                            sessionController: sessionController,
-                            citizen: citizen
-                        )
+                        ProfileOnboardingView(sessionController: sessionController, citizen: citizen)
                     }
                 }
+                NavigationLink("Informasi Terbaru") {
+                    InformationListView(sessionController: sessionController)
+                }
             }
-
             Section {
                 Button("Keluar", role: .destructive) {
                     Task { await sessionController.logout() }
                 }
             }
         }
-        .navigationTitle("Beranda")
+    }
+
+    private func dashboardSection<Accessory: View, Content: View>(
+        title: String,
+        icon: String,
+        @ViewBuilder accessory: () -> Accessory,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.regular) {
+            HStack {
+                Label(title, systemImage: icon)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                Spacer()
+                accessory()
+            }
+            content()
+        }
+        .padding(.horizontal, AppSpacing.medium)
+    }
+
+    private func dashboardTile(
+        title: String,
+        systemImage: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: AppSpacing.small) {
+                Image(systemName: systemImage)
+                    .font(.title2)
+                    .foregroundStyle(AppColors.red)
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+            }
+            .frame(maxWidth: .infinity, minHeight: 54)
+            .padding(AppSpacing.regular)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous))
+            .shadow(color: AppShadow.color, radius: AppShadow.radius, y: AppShadow.y)
+        }
+        .buttonStyle(.plain)
     }
 }
 
